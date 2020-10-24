@@ -117,16 +117,18 @@ if options == "1" :
             print('Host:%s(%s)' % (ip_add, scanner[ip_add].hostname()))
             print('state:%s\n' % scanner[ip_add].state())
             i = 0
-            while i < len(results[ip_add]) :
+            while i < len(results[ip_add]):
                 ser = results[ip_add][i]['service']
-                print('port:%s\t%s\t%s\t%s|\t%s' % (
-                    results[ip_add][i]['portid'], results[ip_add][i]['state'], ser['name'], ser['product'],
-                    ser['version']))
+                print('port: %s\t%s\t%s\t\t\t%s |\t\t\t%s' % (
+                results[ip_add][i]['portid'], results[ip_add][i]['state'], ser.get('name', ''), ser.get('product', ''),
+                ser.get('version', '')))
                 i = i + 1
-                os_det = results['os']
-                os_cl = os_det[0]['osclasss']
-                print('\nOperating System:', os_det[0]['name'], '\tAccuracy:', os_cl['accuracy'])
-                print('CPE:', os_det[0]['cpe'])
+            os_det = results['os']
+            os_cl = os_det[0].get('osclass', '')
+            print('\nOperating System: ', os_det[0].get('name', ''), '\tAccuracy: ', os_det[0].get('accuracy', ''))
+            print('Vendor: ', os_cl.get('vendor', ''))
+            print('OS gen: ', os_cl.get('osgen', ''), '\tAccuracy: ', os_cl.get('accuracy', ''))
+            print('CPE: ', os_det[0].get('cpe', ''))
 
         elif mode == '5' :
             print('Note :THIS OPTION ONLY WORKS WITH KALI LINUX ')
