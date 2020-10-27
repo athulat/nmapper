@@ -1,23 +1,23 @@
-#!/usr/bin/python3
-import os
-import platform
-import socket
-import sys
-import nmap
-import nmap3
-import threading
-from termcolor import colored
-from pyfiglet import figlet_format
-from time import sleep as timeout
+#!/usr/bin/python3 #seting up the env
+import os #importing the OS module for Operating sytem based exc
+import platform #using to identify the platform
+import socket #using to create socket connection for networking
+import sys #using to connect the code with system 
+import nmap #using to adv scan networks
+import nmap3 #using nmaps advanced version
+import threading #handling multiple taks 
+from termcolor import colored #coloring the figlet text
+from pyfiglet import figlet_format #for echo
+from time import sleep as timeout #seting the time exp
 
 
-def restart_program() :
-    python = sys.executable
-    os.execl(python, python, *sys.argv)
+def restart_program() : #defining restart
+    python = sys.executable #making excecutable
+    os.execl(python, python, *sys.argv) #calling the path of exc file
     os.system('clear')
 
 
-print(colored(figlet_format("PyPanther"), color="cyan"))
+print(colored(figlet_format("PyPanther"), color="cyan")) 
 
 options = input("Choose which tool you want to use! \n 1.NMap Scan \n 2.DDoS Attack \n Enter your choice : ")
 
@@ -67,7 +67,7 @@ if options == "1" :
             ip = input("Enter the ip : ")
 
             print("Nmap Version: ", scanner.nmap_version())
-            scanner.scan(ip, arguments='-n -sP -PE -PA21 ,23,80,3389')
+            scanner.scan(ip, arguments='-n -sP -PE -PA21 ,23,80,3389') 
             ip_list = [(x, scanner[x]['status']['state']) for x in scanner.all_hosts()]
             for host, status in ip_list :
                print(host, ':', status)
