@@ -1,125 +1,139 @@
-#!/usr/bin/python3
-import nmap
-import socket
-import sys
-import os
-import pyfiglet
-import nmap3
-import platform
-from time import sleep as timeout
-
-scanner = nmap.PortScanner()
-
-def restart_program():
-    python = sys.executable
-    os.execl(python, python, *sys.argv)
-
-banner1 = pyfiglet.figlet_format("............ NMAP ...........")
-print(banner1)
-
-
-print("                         Welcome To NMAP Automation Tool                    ")
-print("<....................................................................................................................>")
-
-
-while True:
-
-    mode = input("""\nEnter the type of scan!!!
-                  1 ) URL TO IP
-                  2 ) ALL NETWORK Scan
-                  3 ) NORMAL Scan
-                  4 ) AGGRESSIVE Scan \nEnter your option : """)
-
-    print("\nYou have selected option: ", mode)
-
-
-    if mode == '1':
-        os.system('clear')
-        banner2 = pyfiglet.figlet_format("..Domain..LookUP.")
-        print(banner2)
-        url = input("Enter the URL ( *_Example: google.com ) : ")
-        print("IP :", socket.gethostbyname(url))
+import os  # importing the OS module for Operating sytem based exc
+import platform  # using to identify the platform
+import socket  # using to create socket connection for networking
+import sys  # using to connect the code with system
+import nmap  # using to adv scan networks
+import nmap3  # using nmaps advanced version
+import threading  # handling multiple taks
+from termcolor import colored  # coloring the figlet text
+from pyfiglet import figlet_format  # for echo
+from time import sleep as timeout  # seting the time exp
 
 
 
+def restart_program() :  # defining restart
+    python = sys.executable  # making excecutable
+    os.execl(python, python, *sys.argv)  # calling the path of exc file
+    os.system('clear')
+    
+    
+        while True :
 
-    elif mode == '2':
+        print(colored(figlet_format(" PantherMap"), color="green"))
 
-        os.system('clear')
-        a = platform.system()
-        if a == 'Windows':
-            print(os.system('ipconfig'))
-        elif a == 'Linux':
-            print(os.system('ifconfig'))
-        elif a == 'Darwin':
-            print(os.system('ifconfig'))
+        scanner = nmap.PortScanner()
+        print('+===================================================================+')
+        print('||++++++++++++++++WELCOME TO ADVANCED NETWORK SCANNER++++++++++++++||')
+        print('+===================================================================+')
 
-        ip = input("Enter the IP Range *_Example( 1.1.1.0/24 ) : ")
-        print("Nmap Version: ", scanner.nmap_version())
-        scanner.scan(ip, arguments='-n -sP -PE -PA21 ,23,80,3389')
-        ip_list = [(x, scanner[x]['status']['state']) for x in scanner.all_hosts()]
-        for host, status in ip_list:
-            print(host,':',status)
+        mode = input("""\nEnter the type of scan!!!
+                  [1] Domain LookUp
+                  [2] Whole Network Scan
+                  [3] Simple Network scan
+                  [4] Aggressive Scan 
+                  [5] CVE Scan
+                  [00] Back\nEnter your option : """)
+        print("\nYou have selected option: ", mode)
+        if mode == '1' :
+            print(colored(figlet_format("  Domain LookUP"), color="blue"))
 
-    elif mode == '3':
-        os.system('clear')
-        a = platform.system()
-        if a == 'Windows':
-            print(os.system('ipconfig'))
-        elif a == 'Linux':
-            print(os.system('ifconfig'))
-        elif a == 'Darwin':
-            print(os.system('ifconfig'))
+            url = input("Enter the Domain Name(ex.google.com): ")
+            print("IP :", socket.gethostbyname(url))
 
-        ip = input("Enter the IP address : ")
-        print("Nmap Version: ", scanner.nmap_version())
-        scanner.scan(ip, '1-1024', arguments='-v -sS')
-        for host in scanner.all_hosts():
-            print('Host : %s (%s)' % (ip, scanner[ip].hostname()))
-            print('State : %s' % scanner[host].state())
-            for proto in scanner[ip].all_protocols():
-                print('----------')
-                print('Protocol : %s' % proto)
+        elif mode == '2' :
 
-                lport = scanner[ip][proto].keys()
-                lport = sorted(lport)
-                for port in lport:
-                    print('port : %s\t%s\t%s' % (port, scanner[ip][proto][port]['state'], scanner[ip][proto][port]['name']))
+            a = platform.system()
+            if a == 'Windows' :
+                print(os.system('ipconfig'))
+            elif a == 'Linux' :
+                print(os.system('ifconfig'))
+            elif a == 'Darwin' :
+                print(os.system('ifconfig'))
 
-    elif mode == '4':
+            ip = input("Enter the ip (ex.192.168.1.0/24): ")
 
-        os.system('clear')
-        a = platform.system()
-        if a == 'Windows':
-            print(os.system('ipconfig'))
-        elif a == 'Linux':
-            print(os.system('ifconfig'))
-        elif a == 'Darwin':
-            print(os.system('ifconfig'))
+            print("Nmap Version: ", scanner.nmap_version())
+            scanner.scan(ip, arguments='-n -sP -PE -PA21 ,23,80,3389')
+            ip_list = [(x, scanner[x]['status']['state']) for x in scanner.all_hosts()]
+            for host, status in ip_list :
+                print(host, ':', status)
 
-        ip_add = input("Enter the ip address : ")
-        print("Nmap Version: ", scanner.nmap_version())
-        scanner.scan(ip_add, '1-1024', arguments='-A')
-        nmap = nmap3.NmapScanTechniques()
-        results = nmap.nmap_tcp_scan(ip_add, args="-A")
-        print('Host : %s (%s)' % (ip_add, scanner[ip_add].hostname()))
-        print('State : %s\n' % scanner[ip_add].state())
-        i=0
-        while i<len(results[ip_add]):
+        elif mode == '3' :
 
-            ser = results[ip_add][i]['service']
-            print('port: %s\t%s\t%s\t%s |\t%s' % (results[ip_add][i]['portid'],results[ip_add][i]['state'],ser['name'],ser['product'],ser['version']))
-            i = i+1
-        os_det = results['os']
-        os_cl = os_det[0]['osclass']
-        print('\nOperating System: ',os_det[0]['name'],'\tAccuracy: ',os_det[0]['accuracy'])
-        print('Vendor: ',os_cl['vendor'])
-        print('OS gen: ',os_cl['osgen'],'\tAccuracy: ',os_cl['accuracy'])
-        print('CPE: ',os_det[0]['cpe'])
-    elif mode >= '5':
-        print("Enter a valid option")
-    elif mode == '0':
-        print("Enter a valid option")
-    else:
-        timeout(3)
-        restart_program()
+            a = platform.system()
+            if a == 'Windows' :
+                print(os.system('ipconfig'))
+            elif a == 'Linux' :
+                print(os.system('ifconfig'))
+            elif a == 'Darwin' :
+                print(os.system('ifconfig'))
+
+            ip = input("Enter the IP address : ")
+
+            print("Nmap Version: ", scanner.nmap_version())
+            scanner.scan(ip, '1-1024', arguments='-v -sS')
+            for host in scanner.all_hosts() :
+                print('Host : %s (%s)' % (ip, scanner[ip].hostname()))
+                print('State : %s' % scanner[host].state())
+                for proto in scanner[ip].all_protocols() :
+                    print('----------')
+                    print('Protocol : %s' % proto)
+
+                    lport = scanner[ip][proto].keys()
+                    lport = sorted(lport)
+                    for port in lport :
+                        print('port : %s\t%s\t%s' % (
+                            port, scanner[ip][proto][port]['state'], scanner[ip][proto][port]['name']))
+
+        elif mode == '4' :
+            a = platform.system()
+            if a == 'Windows' :
+                print(os.system('ipconfig'))
+            elif a == 'Linux' :
+                print(os.system('ifconfig'))
+            elif a == 'Darwin' :
+                print(os.system('ifconfig'))
+
+            ip_add = input('Enter the ip address : ')
+
+            print("NMap Version:", scanner.nmap_version())
+            scanner.scan(ip_add, '1-1024', arguments='-A')
+            nmap1 = nmap3.NmapScanTechniques()
+            results = nmap1.nmap_tcp_scan(ip_add, args="-A")
+            print('Host:%s(%s)' % (ip_add, scanner[ip_add].hostname()))
+            print('state:%s\n' % scanner[ip_add].state())
+            i = 0
+            while i < len(results[ip_add]) :
+                ser = results[ip_add][i]['service']
+                print('port: %s\t%s\t%s\t\t\t%s |\t\t\t%s' % (
+                    results[ip_add][i]['portid'], results[ip_add][i]['state'], ser.get('name', ''),
+                    ser.get('product', ''),
+                    ser.get('version', '')))
+                i = i + 1
+            os_det = results['os']
+            os_cl = os_det[0].get('osclass', '')
+            print('\nOperating System: ', os_det[0].get('name', ''), '\tAccuracy: ', os_det[0].get('accuracy', ''))
+            print('Vendor: ', os_cl.get('vendor', ''))
+            print('OS gen: ', os_cl.get('osgen', ''), '\tAccuracy: ', os_cl.get('accuracy', ''))
+            print('CPE: ', os_det[0].get('cpe', ''))
+
+        elif mode == '5' :
+            print('Note :THIS OPTION ONLY WORKS WITH KALI LINUX ')
+
+
+            def vulnhunt(IP) :
+                command = "nmap -script vuln -Pn " + IP
+                process = os.popen(command)
+                result = str(process.read())
+                return result
+
+
+            print(vulnhunt(input('enter the IP here:')))
+        elif mode >= '6' :
+            print("Error! Enter a valid option.")
+
+        elif mode == '00' or '0' :
+            restart_program()
+        else :
+            timeout(3)
+            restart_program()
