@@ -1,4 +1,0 @@
-termcolor
-python-nmap
-python3-nmap
-pyfiglet
